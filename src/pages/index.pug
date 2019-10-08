@@ -1,0 +1,11 @@
+extends template/_layout
+include ../components/desk/desk
+
+block vars
+  - var title = "Главная";
+
+
+block content 
+
+  section.desk__wrapper
+    +desk()
