@@ -1,5 +1,21 @@
 mixin desk(data)
     div.desk
-        .desk__box
-            .desk__title Asdas
-            input(type="text" name="title").desk__title-area
+        form.desk__box
+            button(type="button").desk__start-btn.js-title-add Добавить колонку
+            h3.desk__title Заголовок
+            input(type="text" name="title" placeholder="Введите название карточки").desk__title-input
+            button(type="button").desk__title-add.js-card-btn Добавить заголовок
+            ul.desk__task-list
+                //li.desk__list-item Задача
+
+            textarea(type="text" placeholder="Опишите задачу").desk__task-area
+
+            .desk__title.js-title-area
+
+
+
+
+
+            .desk__bottom.js-desk__bottom
+                button(type="button").desk__task-add Добавить карточку
+                button(type="button").desk__task-close

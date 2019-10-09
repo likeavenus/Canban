@@ -1,6 +1,5 @@
 import $ from "jquery";
 
-// import Component from '../../components/Component/Component';
+import desk from '../../components/desk/desk';
 
-// Component()
-
+desk();
