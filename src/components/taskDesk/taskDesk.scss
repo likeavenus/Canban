@@ -1,3 +1,14 @@
+.desk__wrapper {
+  width: 100vw;
+  height: 100vh;
+  background: url("../img/desk/space.jpg") no-repeat center/ cover;
+  padding: 21px 20px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .taskDesk {
   display: block;
   width: 272px;
@@ -133,6 +144,20 @@
   min-height: 35px;
   overflow: auto;
   position: static;
+
+  &.drag_element {
+    display: none;
+    width: 248px;
+    height: 35px;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  &.ondrag {
+    border: 1px dashed #000;
+    background: rgba(0,0,0,.4);
+  }
 }
 
 .taskDesk_add_box {
