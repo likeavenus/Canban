@@ -1,5 +1,5 @@
 import $ from "jquery";
 
-import desk from '../../components/desk/desk';
+import taskDesk from '../../components/taskDesk/taskDesk';
 
-desk();
+taskDesk();
