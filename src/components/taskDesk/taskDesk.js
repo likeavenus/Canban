@@ -45,8 +45,9 @@ export default function taskDesk() {
         handleCheckTitle() {
             const taskInput = this.querySelector('.js-task-input');
             const buttonSaveTitle = this.querySelector('.js-save-title');
+            const RegSpace = new RegExp(/.*\S.*/);
 
-            if (taskInput.value === '') {
+            if (!RegSpace.test(taskInput.value)) {
                 buttonSaveTitle.classList.remove('emptyInput');
             } else {
                 buttonSaveTitle.classList.add('emptyInput');
@@ -69,7 +70,9 @@ export default function taskDesk() {
         handleCheckArea() {
             const taskArea = this.querySelector('.js-task-area');
             const taskAddBox = this.querySelector('.taskDesk_add_box');
-            if (taskArea.value === '') {
+            const RegSpace = new RegExp(/.*\S.*/);
+
+            if (!RegSpace.test(taskArea.value)) {
                 taskAddBox.classList.add('emptyArea');
             } else {
                 taskAddBox.classList.remove('emptyArea');
