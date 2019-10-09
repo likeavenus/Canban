@@ -1,69 +1,177 @@
 export default function taskDesk() {
     const deskWrapper = document.querySelector('.desk__wrapper');
-    const taskDesk = document.querySelector('.taskDesk');
+    const temp = document.querySelector('.js-template');
+    const deskClone = temp.content.cloneNode(true);
+    // const taskDesk = document.querySelector('.taskDesk');
+    //
+    // const taskAddBox = document.querySelector('.taskDesk_add_box');
+    //
+    // const buttonAdd = document.querySelector('.js-add-card');
+    // const buttonSave = document.querySelector('.taskDesk_button_save');
+    // const buttonAddTitle = document.querySelector('.js-add-column');
+    // const buttonSaveTitle = document.querySelector('.js-save-title');
+    //
+    // const taskArea = document.querySelector('.js-task-area');
+    // const taskInput = document.querySelector('.js-task-input');
+    // const taskList = document.querySelector('.task_list');
+    //
+    // const closeCardBottom = document.querySelector('.js-close');
+    //
+    // const KEY_ENTER = '13';
+    //
+    //
+    // buttonSaveTitle.addEventListener('click', function (evt) {
+    //     document.querySelector('.taskDesk_title').innerHTML = taskInput.value;
+    //
+    //     taskAddBox.classList.remove('addColumn');
+    //     taskAddBox.classList.add('active');
+    // });
+    //
+    // buttonAddTitle.addEventListener('click', function () {
+    //     taskDesk.classList.add('active');
+    //     taskInput.classList.add('active');
+    //     buttonSaveTitle.classList.add('active');
+    // });
+    //
+    //
+    // taskInput.addEventListener('input', function (evt) {
+    //     if (taskInput.value === '') {
+    //         buttonSaveTitle.classList.remove('emptyInput');
+    //     } else {
+    //         buttonSaveTitle.classList.add('emptyInput');
+    //     }
+    // });
+    //
+    // taskArea.addEventListener('input', function (evt) {
+    //     if (taskArea.value === '') {
+    //         taskAddBox.classList.add('emptyArea');
+    //     } else {
+    //         taskAddBox.classList.remove('emptyArea');
+    //     }
+    // });
+    //
+    // buttonSave.addEventListener('click', function (evt) {
+    //     const newTask = document.createElement('li');
+    //     newTask.classList.add('task_item');
+    //     newTask.innerHTML = taskArea.value;
+    //     taskList.appendChild(newTask);
+    //
+    //     taskArea.value = '';
+    //     taskAddBox.classList.add('emptyArea');
+    // });
+    //
+    // closeCardBottom.addEventListener('click', function (evt) {
+    //     taskAddBox.classList.remove('active');
+    // });
+    //
+    // buttonAdd.addEventListener('click', function (evt) {
+    //     taskAddBox.classList.add('active');
+    // })
 
-    const taskAddBox = document.querySelector('.taskDesk_add_box');
 
-    const buttonAdd = document.querySelector('.js-add-card');
-    const buttonSave = document.querySelector('.taskDesk_button_save');
-    const buttonAddTitle = document.querySelector('.js-add-column');
-    const buttonSaveTitle = document.querySelector('.js-save-title');
+    class Kanban {
+        constructor() {
+            this.element = temp.content.cloneNode(true);
+            const element = this.element.querySelector('.taskDesk');
 
-    const taskArea = document.querySelector('.js-task-area');
-    const taskInput = document.querySelector('.js-task-input');
-    const taskList = document.querySelector('.task_list');
+            const taskDesk = element.querySelector('.taskDesk');
+            const taskAddBox = element.querySelector('.taskDesk_add_box');
+            const buttonSave = element.querySelector('.taskDesk_button_save');
+            const buttonAddTitle = element.querySelector('.js-add-column');
+            const buttonSaveTitle = element.querySelector('.js-save-title');
 
-    const closeCardButton = document.querySelector('.js-close');
+            const taskArea = element.querySelector('.js-task-area');
+            const taskInput = element.querySelector('.js-task-input');
+            const taskList = element.querySelector('.task_list');
 
-    const KEY_ENTER = '13';
-
-
-    buttonSaveTitle.addEventListener('click', function (evt) {
-        document.querySelector('.taskDesk_title').innerHTML = taskInput.value;
-
-        taskAddBox.classList.remove('addColumn');
-        taskAddBox.classList.add('active');
-    });
-
-    buttonAddTitle.addEventListener('click', function () {
-        taskDesk.classList.add('active');
-        taskInput.classList.add('active');
-        buttonSaveTitle.classList.add('active');
-    });
+            const closeCardBottom = element.querySelector('.js-close');
+            const openCardBottom = element.querySelector('.js-add-card');
 
 
-    taskInput.addEventListener('input', function (evt) {
-        if (taskInput.value === '') {
-            buttonSaveTitle.classList.remove('emptyInput');
-        } else {
-            buttonSaveTitle.classList.add('emptyInput');
+
+            buttonAddTitle.addEventListener('click', this.handleAddTitle.bind(element));
+            buttonSaveTitle.addEventListener('click', this.handleSaveTitle.bind(element));
+            taskInput.addEventListener('input', this.handleCheckTitle.bind(element));
+            taskArea.addEventListener('input', this.handleCheckArea.bind(element));
+            buttonSave.addEventListener('click', this.handleSaveTask.bind(element));
+            closeCardBottom.addEventListener('click', this.handleCloseBottomMenu.bind(element));
+            openCardBottom.addEventListener('click', this.handleOpenBottomMenu.bind(element));
+
         }
-    });
 
-    taskArea.addEventListener('input', function (evt) {
-        if (taskArea.value === '') {
+        handleAddTitle() {
+            const taskInput = this.querySelector('.js-task-input');
+            const buttonSaveTitle = this.querySelector('.js-save-title');
+
+            this.classList.add('active');
+            taskInput.classList.add('active');
+            buttonSaveTitle.classList.add('active');
+        }
+
+        handleCheckTitle() {
+            const taskInput = this.querySelector('.js-task-input');
+            const buttonSaveTitle = this.querySelector('.js-save-title');
+
+            if (taskInput.value === '') {
+                buttonSaveTitle.classList.remove('emptyInput');
+            } else {
+                buttonSaveTitle.classList.add('emptyInput');
+            }
+        }
+
+        handleSaveTitle() {
+            const taskAddBox = this.querySelector('.taskDesk_add_box');
+            const taskInput = this.querySelector('.js-task-input');
+
+            this.querySelector('.taskDesk_title').innerHTML = taskInput.value;
+
+            taskAddBox.classList.remove('addColumn');
+            taskAddBox.classList.add('active');
+
+
+            new Kanban().appendDesk();
+        }
+
+        handleCheckArea() {
+            const taskArea = this.querySelector('.js-task-area');
+            const taskAddBox = this.querySelector('.taskDesk_add_box');
+            if (taskArea.value === '') {
+                taskAddBox.classList.add('emptyArea');
+            } else {
+                taskAddBox.classList.remove('emptyArea');
+            }
+        }
+
+        handleSaveTask() {
+            const taskList = this.querySelector('.task_list');
+            const taskArea = this.querySelector('.js-task-area');
+            const taskAddBox = this.querySelector('.taskDesk_add_box');
+            const newTask = document.createElement('li');
+
+            newTask.classList.add('task_item');
+            newTask.innerHTML = taskArea.value;
+            taskList.appendChild(newTask);
+
+            taskArea.value = '';
             taskAddBox.classList.add('emptyArea');
-        } else {
-            taskAddBox.classList.remove('emptyArea');
         }
-    });
 
-    buttonSave.addEventListener('click', function (evt) {
-        const newTask = document.createElement('li');
-        newTask.classList.add('task_item');
-        newTask.innerHTML = taskArea.value;
-        taskList.appendChild(newTask);
+        handleCloseBottomMenu() {
+            const taskAddBox = this.querySelector('.taskDesk_add_box');
+            taskAddBox.classList.remove('active');
+        }
 
-        taskArea.value = '';
-        taskAddBox.classList.add('emptyArea');
-    });
+        handleOpenBottomMenu() {
+            const taskAddBox = this.querySelector('.taskDesk_add_box');
+            taskAddBox.classList.add('active');
+        }
 
-    closeCardButton.addEventListener('click', function (evt) {
-        taskAddBox.classList.remove('active');
-    });
+        appendDesk() {
+            deskWrapper.appendChild(this.element);
+        }
+    }
 
-    buttonAdd.addEventListener('click', function (evt) {
-        taskAddBox.classList.add('active');
-    })
+    const newDesk = new Kanban();
+    newDesk.appendDesk();
 
 }
