@@ -161,6 +161,9 @@ export default function taskDesk() {
                 if (elementUnderMouse.classList.contains('task_item')) {
 
                     console.log(elementUnderMouse, elem);
+
+                    console.log(elem.parentElement);
+
                 }
 
 
