@@ -84,7 +84,7 @@ export default function taskDesk() {
             newTask.innerHTML = taskArea.value;
             taskList.appendChild(newTask);
 
-            dragAndDrop(newTask);
+            dragAndDrop(newTask, taskList);
 
 
             taskArea.value = '';
@@ -107,14 +107,14 @@ export default function taskDesk() {
         }
     }
 
-    function dragAndDrop(elem) {
+    function dragAndDrop(elem, parent) {
         elem.addEventListener('mousedown', function (e) {
             e.preventDefault();
             let startCoords = {
                 x: e.clientX,
                 y: e.clientY
             };
-            console.log(startCoords.x, startCoords.y);
+
 
             dragElement.style.top = elem.getBoundingClientRect().top + 'px';
             dragElement.style.left = elem.getBoundingClientRect().left + 'px';
@@ -140,20 +140,30 @@ export default function taskDesk() {
 
                 dragElement.style.top = (dragElement.offsetTop - shift.y) + 'px';
                 dragElement.style.left = (dragElement.offsetLeft - shift.x) + 'px';
+                dragElement.style.pointerEvents = 'none';
+                dragElement.style.opacity = '.8';
                 document.body.style.cursor = 'move';
-
-                console.log(document.elementFromPoint(moveEvt.x, moveEvt.y));
-            };
+            }
 
             const onMouseUp = function (upEvt) {
                 upEvt.preventDefault();
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
-
+                dragElement.style.pointerEvents = 'auto';
+                dragElement.style.opacity = '1';
 
                 elem.classList.remove('ondrag');
                 dragElement.style.display = 'none';
                 document.body.style.cursor = 'auto';
+
+                let elementUnderMouse = document.elementFromPoint(upEvt.x, upEvt.y);
+
+                if (elementUnderMouse.classList.contains('task_item')) {
+
+                    console.log(elementUnderMouse, elem);
+                }
+
+
 
             };
 
