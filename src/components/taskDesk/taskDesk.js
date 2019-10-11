@@ -160,6 +160,12 @@ export default function taskDesk() {
 
                 if (elementUnderMouse.classList.contains('task_item')) {
 
+                    let elemUnderMouseHTML = elementUnderMouse.innerHTML;
+                    let currentElem = elem.innerHTML;
+
+
+                    elem.innerHTML = elemUnderMouseHTML;
+                    elementUnderMouse.innerHTML = currentElem;
                     console.log(elementUnderMouse, elem);
 
                     console.log(elem.parentElement);
