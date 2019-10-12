@@ -5,9 +5,9 @@ export default function taskDesk() {
 
 
     const titles = JSON.parse(localStorage.getItem("titles")) || [];
-    const tasks = [];
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    function createKanban(title) {
+    function createKanban(title, tasksArray) {
         // constants
         const template = temp.content.cloneNode(true);
         const element = template.querySelector('.taskDesk');
@@ -26,9 +26,14 @@ export default function taskDesk() {
 
         // listeners
         buttonAddTitle.addEventListener('click', handleAddTitle);
-        buttonSaveTitle.addEventListener('click', function (title) {
+        buttonSaveTitle.addEventListener('click', function () {
             handleSaveTitle(title)
         });
+
+        if (title) {
+            handleAddTitle();
+            handleSaveTitle(title);
+        }
 
         taskInput.addEventListener('input', handleCheckTitle);
         taskArea.addEventListener('input', handleCheckArea);
@@ -47,7 +52,6 @@ export default function taskDesk() {
 
        // handlers
         function handleAddTitle() {
-
             element.classList.add('active');
             taskInput.classList.add('active');
             buttonSaveTitle.classList.add('active');
@@ -62,22 +66,19 @@ export default function taskDesk() {
             }
         }
 
-        function handleSaveTitle(title) {
+        function handleSaveTitle() {
 
-            titles.push(taskInput.value);
 
-            console.log(title);
-            if (title) {
+            if (!title) {
                 element.querySelector('.taskDesk_title').innerHTML = taskInput.value;
+                titles.push(taskInput.value);
+                localStorage.setItem('titles', JSON.stringify(titles));
+                createKanban();
             } else {
                 element.querySelector('.taskDesk_title').innerHTML = title;
             }
-
-
             taskAddBox.classList.remove('addColumn');
             taskAddBox.classList.add('active');
-            localStorage.setItem('titles', JSON.stringify(titles));
-            createKanban();
         }
 
         function handleCheckArea() {
@@ -172,9 +173,6 @@ export default function taskDesk() {
 
                     elem.innerHTML = elemUnderMouseHTML;
                     elementUnderMouse.innerHTML = currentElem;
-                    console.log(elementUnderMouse, elem);
-
-                    console.log(elem.parentElement);
 
                 }
             };
@@ -191,9 +189,9 @@ export default function taskDesk() {
         const titlesArray = JSON.parse(localStorage.getItem('titles'));
 
         for (let i = 0; i < titlesLength; i++) {
-            console.log(titlesArray[i]);
             createKanban(titlesArray[i]);
         }
+        createKanban();
     } else {
         createKanban();
     }
