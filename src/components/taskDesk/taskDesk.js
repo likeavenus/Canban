@@ -4,7 +4,10 @@ export default function taskDesk() {
     const dragElement = document.querySelector('.js-drag-element');
 
 
-    function createKanban() {
+    const titles = JSON.parse(localStorage.getItem("titles")) || [];
+    const tasks = [];
+
+    function createKanban(title) {
         // constants
         const template = temp.content.cloneNode(true);
         const element = template.querySelector('.taskDesk');
@@ -23,7 +26,9 @@ export default function taskDesk() {
 
         // listeners
         buttonAddTitle.addEventListener('click', handleAddTitle);
-        buttonSaveTitle.addEventListener('click', handleSaveTitle);
+        buttonSaveTitle.addEventListener('click', function (title) {
+            handleSaveTitle(title)
+        });
 
         taskInput.addEventListener('input', handleCheckTitle);
         taskArea.addEventListener('input', handleCheckArea);
@@ -41,66 +46,72 @@ export default function taskDesk() {
         const RegSpace = new RegExp(/.*\S.*/);
 
        // handlers
-            function handleAddTitle() {
+        function handleAddTitle() {
 
-                element.classList.add('active');
-                taskInput.classList.add('active');
-                buttonSaveTitle.classList.add('active');
+            element.classList.add('active');
+            taskInput.classList.add('active');
+            buttonSaveTitle.classList.add('active');
+        }
+
+        function handleCheckTitle() {
+
+            if (!RegSpace.test(taskInput.value)) {
+                buttonSaveTitle.classList.remove('emptyInput');
+            } else {
+                buttonSaveTitle.classList.add('emptyInput');
             }
+        }
 
-            function handleCheckTitle() {
+        function handleSaveTitle(title) {
 
-                if (!RegSpace.test(taskInput.value)) {
-                    buttonSaveTitle.classList.remove('emptyInput');
-                } else {
-                    buttonSaveTitle.classList.add('emptyInput');
-                }
-            }
+            titles.push(taskInput.value);
 
-            function handleSaveTitle() {
-
+            console.log(title);
+            if (title) {
                 element.querySelector('.taskDesk_title').innerHTML = taskInput.value;
-
-                taskAddBox.classList.remove('addColumn');
-                taskAddBox.classList.add('active');
-
-                createKanban();
+            } else {
+                element.querySelector('.taskDesk_title').innerHTML = title;
             }
 
-            function handleCheckArea() {
 
-                if (!RegSpace.test(taskArea.value)) {
-                    taskAddBox.classList.add('emptyArea');
-                } else {
-                    taskAddBox.classList.remove('emptyArea');
-                }
-            }
+            taskAddBox.classList.remove('addColumn');
+            taskAddBox.classList.add('active');
+            localStorage.setItem('titles', JSON.stringify(titles));
+            createKanban();
+        }
 
-            function handleSaveTask() {
-                const newTask = document.createElement('li');
+        function handleCheckArea() {
 
-                newTask.classList.add('task_item');
-                newTask.innerHTML = taskArea.value;
-                taskList.appendChild(newTask);
-
-                dragAndDrop(newTask, taskList);
-
-
-                taskArea.value = '';
+            if (!RegSpace.test(taskArea.value)) {
                 taskAddBox.classList.add('emptyArea');
+            } else {
+                taskAddBox.classList.remove('emptyArea');
             }
+        }
+
+        function handleSaveTask() {
+            const newTask = document.createElement('li');
+
+            newTask.classList.add('task_item');
+            newTask.innerHTML = taskArea.value;
+            taskList.appendChild(newTask);
+
+            dragAndDrop(newTask, taskList);
 
 
-            function handleCloseBottomMenu() {
-                taskAddBox.classList.remove('active');
-            }
+            taskArea.value = '';
+            taskAddBox.classList.add('emptyArea');
+        }
 
-            function handleOpenBottomMenu() {
-                taskAddBox.classList.add('active');
-            }
+
+        function handleCloseBottomMenu() {
+            taskAddBox.classList.remove('active');
+        }
+
+        function handleOpenBottomMenu() {
+            taskAddBox.classList.add('active');
+        }
     }
-
-    createKanban();
 
     function dragAndDrop(elem, parent) {
         elem.addEventListener('mousedown', function (e) {
@@ -166,13 +177,25 @@ export default function taskDesk() {
                     console.log(elem.parentElement);
 
                 }
-
-
-
             };
 
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         })
     }
+
+
+
+    if (localStorage.getItem('titles')) {
+        const titlesLength = JSON.parse(localStorage.getItem('titles')).length;
+        const titlesArray = JSON.parse(localStorage.getItem('titles'));
+
+        for (let i = 0; i < titlesLength; i++) {
+            console.log(titlesArray[i]);
+            createKanban(titlesArray[i]);
+        }
+    } else {
+        createKanban();
+    }
+
 }
