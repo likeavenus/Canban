@@ -186,7 +186,7 @@ export default function taskDesk() {
                 parent.querySelector('.js-task-text').innerHTML = parent.querySelector('.js-input-task').value;
                 parent.querySelector('.js-task-popup-controls').classList.remove('active');
                 console.log(parent);
-                parent.querySelector('.task_item').classList.remove('cantDrag');
+                parent.classList.remove('cantDrag');
             }
         }
 
