@@ -181,7 +181,7 @@ export default function taskDesk() {
         }
 
         function handleSaveEditTask() {
-            const parent = this.closest('.taskDesk');
+            const parent = this.closest('.task_item');
             if(this.classList.contains('valid')) {
                 parent.querySelector('.js-task-text').innerHTML = parent.querySelector('.js-input-task').value;
                 parent.querySelector('.js-task-popup-controls').classList.remove('active');
