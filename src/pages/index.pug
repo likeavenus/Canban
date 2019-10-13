@@ -11,3 +11,12 @@ block content
     .task_item.drag_element.js-drag-element
     template.js-template
       +taskDesk()
+    template.js-task-popup
+      button(type="button").task_item_btn.js-task-item-btn
+      .task_popup_controls.js-task-popup-controls
+        input(type="text" name="edit").task_item_input.js-input-task
+        button(type="button").task_item_save.js-task-item-save.valid Сохранить
+      ul.task_item_popup.js-task-popup-list
+        li.task_popup_edit.js-task-item-edit Редактировать
+        li.task_popup_edit.js-task-item-delete Удалить
+        li.task_popup_edit.task_popup_close.js-task-item-close

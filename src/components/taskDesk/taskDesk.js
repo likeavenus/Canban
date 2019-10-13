@@ -1,6 +1,7 @@
 export default function taskDesk() {
     const deskWrapper = document.querySelector('.desk__wrapper');
     const temp = document.querySelector('.js-template');
+    const taskPopupTemp = document.querySelector('.js-task-popup');
     const dragElement = document.querySelector('.js-drag-element');
 
 
@@ -49,6 +50,8 @@ export default function taskDesk() {
         closeCardBottom.addEventListener('click', handleCloseBottomMenu);
         openCardBottom.addEventListener('click', handleOpenBottomMenu);
 
+
+
         // inject template to DOM
         deskWrapper.appendChild(template);
 
@@ -64,7 +67,6 @@ export default function taskDesk() {
         }
 
         function handleCheckTitle() {
-
             if (!RegSpace.test(taskInput.value)) {
                 buttonSaveTitle.classList.remove('emptyInput');
             } else {
@@ -95,10 +97,22 @@ export default function taskDesk() {
 
         function handleSaveTask() {
             const newTask = document.createElement('li');
+            const newTaskTextElem = document.createElement('span');
+            newTaskTextElem.classList.add('js-task-text');
+            newTask.appendChild(newTaskTextElem);
+            const newTaskPopup = taskPopupTemp.content.cloneNode(true);
+
+            const taskItemPopup = newTaskPopup.querySelector('.js-task-popup-list');
+            const openTaskEditorButton = newTaskPopup.querySelector('.js-task-item-btn');
+            const taskRemoveButton = newTaskPopup.querySelector('.js-task-item-delete');
+            const taskEditButton = newTaskPopup.querySelector('.js-task-item-edit');
+            const taskEditInput = newTaskPopup.querySelector('.js-input-task');
+            const taskSaveButton = newTaskPopup.querySelector('.js-task-item-save');
 
             if(!tasksArray) {
                 newTask.classList.add('task_item');
-                newTask.innerHTML = taskArea.value;
+                newTaskTextElem.innerHTML = taskArea.value;
+                newTask.appendChild(newTaskPopup);
                 taskList.appendChild(newTask);
 
                 dragAndDrop(newTask);
@@ -109,9 +123,29 @@ export default function taskDesk() {
                 // localStorage.setItem('tasks', JSON.stringify(tasks));
                 // console.log(localStorage.getItem('tasks'));
 
-            } else {
-            }
+                openTaskEditorButton.addEventListener('mousedown', function (e) {
+                    e.stopPropagation();
+                });
 
+                taskSaveButton.addEventListener('mousedown', function (e) {
+                    e.stopPropagation();
+                });
+
+                openTaskEditorButton.addEventListener('click', handleOpenTaskEditor);
+                taskRemoveButton.addEventListener('click', handleRemoveTask);
+                taskEditButton.addEventListener('click', handleEditTask);
+                taskSaveButton.addEventListener('click', handleSaveEditTask);
+
+                taskItemPopup.addEventListener('mousedown', function (e) {
+                    e.stopPropagation();
+                }, false);
+
+                taskEditInput.addEventListener('mousedown', function (e) {
+                    e.stopPropagation();
+                }, false);
+
+                taskEditInput.addEventListener('input', handleEditTaskInput);
+            }
         }
 
 
@@ -122,86 +156,133 @@ export default function taskDesk() {
         function handleOpenBottomMenu() {
             taskAddBox.classList.add('active');
         }
-    }
 
-    function dragAndDrop(elem) {
-        elem.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            let startCoords = {
-                x: e.clientX,
-                y: e.clientY
-            };
+        function handleOpenTaskEditor() {
+            this.closest('.task_item').classList.add('cantDrag');
+            this.closest('.task_item').querySelector('.js-task-popup-list').classList.add('active');
+        }
 
+        function handleRemoveTask() {
+            this.closest('.task_item').remove();
+        }
 
-            dragElement.style.top = elem.getBoundingClientRect().top + 'px';
-            dragElement.style.left = elem.getBoundingClientRect().left + 'px';
+        function handleEditTask() {
+            this.closest('.task_item').querySelector('.js-task-popup-controls').classList.add('active');
+            this.closest('.task_item').querySelector('.js-input-task').value = this.closest('.task_item').querySelector('.js-task-text').innerHTML;
+            this.closest('.task_item').querySelector('.js-task-popup-list').classList.remove('active');
+        }
 
-            function onMouseMove(moveEvt) {
-                moveEvt.preventDefault();
-
-                let shift = {
-                    x: startCoords.x - moveEvt.clientX,
-                    y: startCoords.y - moveEvt.clientY
-                };
-
-                startCoords = {
-                    x: moveEvt.clientX,
-                    y: moveEvt.clientY
-                };
-
-                dragElement.innerHTML = elem.innerHTML;
-                dragElement.style.display = 'block';
-                dragElement.style.zIndex = 1000;
-
-                elem.classList.add('onDrag');
-
-                dragElement.style.top = (dragElement.offsetTop - shift.y) + 'px';
-                dragElement.style.left = (dragElement.offsetLeft - shift.x) + 'px';
-                dragElement.style.pointerEvents = 'none';
-                dragElement.style.opacity = '.8';
-                document.body.style.cursor = 'move';
-
-                let elementUnderMouse = document.elementFromPoint(moveEvt.x, moveEvt.y);
-                console.log(elementUnderMouse);
-
-                if (elementUnderMouse.classList.contains('task_item') && !elementUnderMouse.classList.contains('onDrag')) {
-                    elementUnderMouse.classList.add('pauseDrag');
-
-                    elementUnderMouse.addEventListener('mouseout', function () {
-                        elementUnderMouse.classList.remove('pauseDrag');
-                    })
-                }
+        function handleEditTaskInput() {
+            if (!RegSpace.test(this.value)) {
+                this.nextElementSibling.classList.remove('valid');
+            } else {
+                this.nextElementSibling.classList.add('valid');
             }
+        }
 
-            const onMouseUp = function (upEvt) {
-                upEvt.preventDefault();
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-                dragElement.style.pointerEvents = 'auto';
-                dragElement.style.opacity = '1';
+        function handleSaveEditTask() {
+            const parent = this.closest('.taskDesk');
+            if(this.classList.contains('valid')) {
+                parent.querySelector('.js-task-text').innerHTML = parent.querySelector('.js-input-task').value;
+                parent.querySelector('.js-task-popup-controls').classList.remove('active');
+                console.log(parent);
+                parent.querySelector('.task_item').classList.remove('cantDrag');
+            }
+        }
 
-                elem.classList.remove('onDrag');
-                dragElement.style.display = 'none';
-                document.body.style.cursor = 'auto';
+        function dragAndDrop(elem) {
 
-                let elementUnderMouse = document.elementFromPoint(upEvt.x, upEvt.y);
-                elementUnderMouse.classList.remove('pauseDrag');
+            elem.addEventListener('mousedown', function (e) {
 
-                if (elementUnderMouse.classList.contains('task_item')) {
+                if (!elem.classList.contains('cantDrag')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let startCoords = {
+                        x: e.clientX,
+                        y: e.clientY
+                    };
 
-                    let elemUnderMouseHTML = elementUnderMouse.innerHTML;
-                    let currentElem = elem.innerHTML;
+
+                    dragElement.style.top = elem.getBoundingClientRect().top + 'px';
+                    dragElement.style.left = elem.getBoundingClientRect().left + 'px';
+
+                    function onMouseMove(moveEvt) {
+                        moveEvt.preventDefault();
+
+                        let shift = {
+                            x: startCoords.x - moveEvt.clientX,
+                            y: startCoords.y - moveEvt.clientY
+                        };
+
+                        startCoords = {
+                            x: moveEvt.clientX,
+                            y: moveEvt.clientY
+                        };
+
+                        dragElement.innerHTML = elem.innerHTML;
+                        dragElement.style.display = 'block';
+                        dragElement.style.zIndex = 1000;
+
+                        elem.classList.add('onDrag');
+
+                        dragElement.style.top = (dragElement.offsetTop - shift.y) + 'px';
+                        dragElement.style.left = (dragElement.offsetLeft - shift.x) + 'px';
+                        dragElement.style.pointerEvents = 'none';
+                        dragElement.style.opacity = '.8';
+                        document.body.style.cursor = 'move';
+
+                        let elementUnderMouse = document.elementFromPoint(moveEvt.x, moveEvt.y);
+
+                        if (elementUnderMouse.classList.contains('task_item') && !elementUnderMouse.classList.contains('onDrag')) {
+                            elementUnderMouse.classList.add('pauseDrag');
+
+                            elementUnderMouse.addEventListener('mouseout', function () {
+                                elementUnderMouse.classList.remove('pauseDrag');
+                            })
+                        }
+                    }
+
+                    const onMouseUp = function (upEvt) {
+                        upEvt.preventDefault();
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                        dragElement.style.pointerEvents = 'auto';
+                        dragElement.style.opacity = '1';
+
+                        elem.classList.remove('onDrag');
+                        dragElement.style.display = 'none';
+                        document.body.style.cursor = 'auto';
+
+                        let elementUnderMouse = document.elementFromPoint(upEvt.x, upEvt.y);
+                        elementUnderMouse.classList.remove('pauseDrag');
+
+                        if (elementUnderMouse.classList.contains('task_item')) {
+
+                            let elemUnderMouseHTML = elementUnderMouse.innerHTML;
+                            let currentElem = elem.innerHTML;
 
 
-                    elem.innerHTML = elemUnderMouseHTML;
-                    elementUnderMouse.innerHTML = currentElem;
+                            elem.innerHTML = elemUnderMouseHTML;
+                            elementUnderMouse.innerHTML = currentElem;
 
+                        }
+
+                        elem.querySelector('.js-task-item-btn').addEventListener('click', handleOpenTaskEditor);
+                        elem.querySelector('.js-task-item-delete').addEventListener('click', handleRemoveTask);
+                        elem.querySelector('.js-task-item-edit').addEventListener('click', handleEditTask);
+                        elem.querySelector('.js-task-item-save').addEventListener('click', handleSaveEditTask);
+                        elem.querySelector('.js-input-task').addEventListener('input', handleEditTaskInput);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
                 }
-            };
 
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        })
+            })
+
+
+        }
+
     }
 
 
@@ -217,5 +298,4 @@ export default function taskDesk() {
     } else {
         createKanban();
     }
-
 }

@@ -130,7 +130,8 @@
 
 .task_item {
   background: #fff;
-  box-shadow: 0px 1px 4px rgba(9, 45, 66, 0.25);
+  box-shadow: 0 1px 4px rgba(9, 45, 66, 0.25);
+  border: 1px solid transparent;
   border-radius: 3px;
   width: 100%;
   padding: 8px 12px;
@@ -140,15 +141,16 @@
   font-family: $mont;
   word-wrap: break-word;
   z-index: 100;
-  max-height: 100px;
+  //max-height: 100px;
   min-height: 35px;
-  overflow: auto;
-  position: static;
+  //overflow: auto;
+  position: relative;
 
   &.drag_element {
     display: none;
     width: 248px;
-    height: 35px;
+    //max-height: 35px;
+    //overflow: hidden;
     position: absolute;
     left: 0;
     top: 0;
@@ -161,6 +163,121 @@
 
   &.pauseDrag {
     background: #d1ffc1;
+  }
+}
+
+.task_item_btn {
+  position: absolute;
+  right: -5px;
+  top: 2px;
+  background: url("../img/taskDesk/menu.png") no-repeat center / contain;
+  width: 20px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.task_item_popup {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 3px;
+  width: 130px;
+  height: auto;
+  background: #fff;
+  flex-direction: column;
+  justify-content: center;
+
+  &.active {
+    display: flex;
+  }
+}
+
+.task_item_input {
+  display: block;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(9, 45, 66, 0.25);
+  border-radius: 3px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 19px;
+  font-family: $mont;
+  word-wrap: break-word;
+  z-index: 100;
+  min-height: 35px;
+  color: #000;
+}
+
+.task_popup_controls {
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+.task_item_save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 152px;
+  height: 30px;
+  background-color: #bbb;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 19px;
+  color: #fff;
+  transition: all .2s ease;
+  font-family: $mont;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: #bbb;
+  }
+
+
+  &.valid {
+    background-color: #39C071;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: #45c04f;
+    }
+  }
+}
+
+
+
+.task_popup_edit {
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background: lightblue;
+  }
+}
+
+.task_popup_close {
+  display: none;
+  width: 15px;
+  height: 15px;
+  //display: inline-block;
+  position: absolute;
+  bottom: 9px;
+  right: 0;
+  background: url(../img/taskDesk/cross.svg) no-repeat center;
+  background-size: contain;
+  cursor: pointer;
+  transition: all 0s;
+
+  &:hover {
+    background-color: transparent;
   }
 }
 
