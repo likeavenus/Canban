@@ -7,6 +7,12 @@ export default function taskDesk() {
     const titles = JSON.parse(localStorage.getItem("titles")) || [];
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+    const testTaskArr = [
+        [1,2,3],
+        [4,5,6],
+        [7,8,9]
+    ];
+
     function createKanban(title, tasksArray) {
         // constants
         const template = temp.content.cloneNode(true);
@@ -67,8 +73,6 @@ export default function taskDesk() {
         }
 
         function handleSaveTitle() {
-
-
             if (!title) {
                 element.querySelector('.taskDesk_title').innerHTML = taskInput.value;
                 titles.push(taskInput.value);
@@ -82,7 +86,6 @@ export default function taskDesk() {
         }
 
         function handleCheckArea() {
-
             if (!RegSpace.test(taskArea.value)) {
                 taskAddBox.classList.add('emptyArea');
             } else {
@@ -93,15 +96,22 @@ export default function taskDesk() {
         function handleSaveTask() {
             const newTask = document.createElement('li');
 
-            newTask.classList.add('task_item');
-            newTask.innerHTML = taskArea.value;
-            taskList.appendChild(newTask);
+            if(!tasksArray) {
+                newTask.classList.add('task_item');
+                newTask.innerHTML = taskArea.value;
+                taskList.appendChild(newTask);
 
-            dragAndDrop(newTask, taskList);
+                dragAndDrop(newTask);
+                taskArea.value = '';
+                taskAddBox.classList.add('emptyArea');
 
+                tasks.push(newTask.innerHTML);
+                // localStorage.setItem('tasks', JSON.stringify(tasks));
+                // console.log(localStorage.getItem('tasks'));
 
-            taskArea.value = '';
-            taskAddBox.classList.add('emptyArea');
+            } else {
+            }
+
         }
 
 
@@ -114,7 +124,7 @@ export default function taskDesk() {
         }
     }
 
-    function dragAndDrop(elem, parent) {
+    function dragAndDrop(elem) {
         elem.addEventListener('mousedown', function (e) {
             e.preventDefault();
             let startCoords = {
@@ -143,13 +153,24 @@ export default function taskDesk() {
                 dragElement.style.display = 'block';
                 dragElement.style.zIndex = 1000;
 
-                elem.classList.add('ondrag');
+                elem.classList.add('onDrag');
 
                 dragElement.style.top = (dragElement.offsetTop - shift.y) + 'px';
                 dragElement.style.left = (dragElement.offsetLeft - shift.x) + 'px';
                 dragElement.style.pointerEvents = 'none';
                 dragElement.style.opacity = '.8';
                 document.body.style.cursor = 'move';
+
+                let elementUnderMouse = document.elementFromPoint(moveEvt.x, moveEvt.y);
+                console.log(elementUnderMouse);
+
+                if (elementUnderMouse.classList.contains('task_item') && !elementUnderMouse.classList.contains('onDrag')) {
+                    elementUnderMouse.classList.add('pauseDrag');
+
+                    elementUnderMouse.addEventListener('mouseout', function () {
+                        elementUnderMouse.classList.remove('pauseDrag');
+                    })
+                }
             }
 
             const onMouseUp = function (upEvt) {
@@ -159,11 +180,12 @@ export default function taskDesk() {
                 dragElement.style.pointerEvents = 'auto';
                 dragElement.style.opacity = '1';
 
-                elem.classList.remove('ondrag');
+                elem.classList.remove('onDrag');
                 dragElement.style.display = 'none';
                 document.body.style.cursor = 'auto';
 
                 let elementUnderMouse = document.elementFromPoint(upEvt.x, upEvt.y);
+                elementUnderMouse.classList.remove('pauseDrag');
 
                 if (elementUnderMouse.classList.contains('task_item')) {
 

@@ -154,9 +154,13 @@
     top: 0;
   }
 
-  &.ondrag {
+  &.onDrag {
     border: 1px dashed #000;
     background: rgba(0,0,0,.4);
+  }
+
+  &.pauseDrag {
+    background: #d1ffc1;
   }
 }
 
